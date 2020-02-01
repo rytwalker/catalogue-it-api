@@ -4,6 +4,7 @@ module Api
   module V1
     # Collectables are items in a collection
     class CollectablesController < ApplicationController
+      before_action :authorize_access_request!, except: %i[show index]
       before_action :set_collectable, only: %i[show update destroy]
 
       # GET /collectables

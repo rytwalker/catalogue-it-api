@@ -4,11 +4,12 @@ module Api
   module V1
     # A collection belongs to 1 user
     class CollectionsController < ApplicationController
+      before_action :authorize_access_request!, except: %i[show index]
       before_action :set_collection, only: %i[show update destroy]
 
       # GET /collections
       def index
-        @collections = Collection.all
+        @collections = current_user.collections.all
 
         render json: @collections
       end
@@ -20,7 +21,7 @@ module Api
 
       # POST /collections
       def create
-        @collection = Collection.new(collection_params)
+        @collection = current_user.collections.build(collection_params)
 
         if @collection.save
           render json: @collection, status: :created, location: @collection
@@ -47,7 +48,7 @@ module Api
 
       # Use callbacks to share common setup or constraints between actions.
       def set_collection
-        @collection = Collection.find(params[:id])
+        @collection = current_user.collections.find(params[:id])
       end
 
       # Only allow a trusted parameter "white list" through.
